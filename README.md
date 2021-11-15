@@ -1,2 +1,2 @@
 # movies-explorer-api
-graduation project (frontend)
+graduation project (backend)
