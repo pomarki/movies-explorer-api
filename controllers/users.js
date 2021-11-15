@@ -38,18 +38,6 @@ module.exports.updateUserProfile = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getMovies = (req, res, next) => {
-// написать
-};
-
-module.exports.createMovie = (req, res, next) => {
-  // написать
-};
-
-module.exports.deleteMovie = (req, res, next) => {
-  // написать
-};
-
 module.exports.createUser = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
