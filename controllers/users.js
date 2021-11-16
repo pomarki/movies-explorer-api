@@ -4,9 +4,7 @@ const User = require('../models/user');
 
 const { SALT_ROUND, JWT_SECRET } = process.env;
 
-const NotFoundError = require('../errors/not-found-err');
-const UnauthorizedError = require('../errors/unauthorized-err');
-const ConflictError = require('../errors/conflict-err');
+const { NotFoundError, UnauthorizedError, ConflictError } = require('../errors');
 
 module.exports.getActualUserInfo = (req, res, next) => {
   User.findById(req.user._id)
