@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const { SALT_ROUND, JWT_SECRET } = process.env;
+const { JWT_SECRET } = process.env;
 
 const { NotFoundError, UnauthorizedError, ConflictError } = require('../errors');
 
@@ -43,7 +43,7 @@ module.exports.createUser = (req, res, next) => {
         throw new ConflictError('Пользователь с таким email существует');
       }
       bcrypt
-        .hash(req.body.password, SALT_ROUND)
+        .hash(req.body.password, 10)
         .then((hash) => User.create({
           name: req.body.name,
           email: req.body.email,
