@@ -20,7 +20,20 @@ module.exports.createMovie = (req, res, next) => {
     thumbnail, movieId, nameRU, nameEN,
   } = req.body;
 
-  Movie.create({ country, director, duration, year, description, image, trailer, thumbnail, owner, movieId, nameRU, nameEN, })
+  Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    thumbnail,
+    owner,
+    movieId,
+    nameRU,
+    nameEN,
+  })
     .then((movie) => {
       if (!movie) {
         throw new BadRequestError('Переданы некорректные данные для создания карточки фильма');

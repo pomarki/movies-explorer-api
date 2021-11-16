@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
-// const cors = require('cors');
+const cors = require('cors');
 const { login, createUser } = require('./controllers/users');
 // const { userRouter, movieRouter } = require('./routes');
 
@@ -16,7 +16,7 @@ const NotFoundError = require('./errors');
 // const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
-/* const options = {
+const options = {
   origin: [
     'http://localhost:3000',
     'https://github.com/pomarki',
@@ -26,11 +26,11 @@ const { PORT = 3000 } = process.env;
   optionsSuccessStatus: 204,
   allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
   credentials: true,
-}; */
+};
 
 const app = express();
 
-/* app.use('*', cors(options)); */
+app.use('*', cors(options));
 
 app.use(helmet());
 
