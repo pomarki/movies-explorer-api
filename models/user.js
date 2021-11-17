@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const isEmail = require('validator/lib/isEmail');
+const { EMAIL_FORMAT_ERROR } = require('../helpers/res-messages');
 
 const userSchema = new mongoose.Schema(
   {
@@ -8,6 +9,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       minLength: 2,
       maxLength: 30,
+      required: true,
     },
     email: {
       type: String,
@@ -16,7 +18,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       validate: {
         validator: (v) => isEmail(v),
-        message: 'Неправильный формат почты',
+        message: EMAIL_FORMAT_ERROR,
       },
     },
     password: {

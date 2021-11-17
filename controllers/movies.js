@@ -1,12 +1,17 @@
 const Movie = require('../models/movie');
-const { BadRequestError, NotFoundError, ForbiddenError } = require('../errors');
+const BadRequestError = require('../errors/bad-request-err');
+const NotFoundError = require('../errors/not-found-err');
+const ForbiddenError = require('../errors/forbidden-err');
+const {
+  REQUEST_ERROR, DATA_CREATE_ERROR, DATE_NOT_FOUND, DATE_SUCCESS_REMOVE, ACCESS_ERROR,
+} = require('../helpers/res-messages');
 
 module.exports.getMovies = (req, res, next) => {
   const ownerId = req.user._id;
-  Movie.find({ ownerId })
+  Movie.find({ owner: ownerId })
     .then((moviesDate) => {
       if (!moviesDate) {
-        throw new BadRequestError('Переданы некорректные данные для просматра карточек фильма');
+        throw new BadRequestError(REQUEST_ERROR);
       }
       res.send({ moviesDate });
     })
@@ -36,7 +41,7 @@ module.exports.createMovie = (req, res, next) => {
   })
     .then((movie) => {
       if (!movie) {
-        throw new BadRequestError('Переданы некорректные данные для создания карточки фильма');
+        throw new BadRequestError(DATA_CREATE_ERROR);
       }
       res.send({ movie });
     })
@@ -44,13 +49,13 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.movieId)
-    .orFail(new NotFoundError('Карточки этого фильма не существует'))
+  Movie.findById({ _id: req.params.movieId })
+    .orFail(new NotFoundError(DATE_NOT_FOUND))
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
         Movie.deleteOne({ _id: movie._id })
-          .then(res.send({ message: 'Карточка фильма удалена' }));
-      } else { throw new ForbiddenError('Нельзя удалять карточки фильмов других пользователей'); }
+          .then(res.send({ message: DATE_SUCCESS_REMOVE }));
+      } else { throw new ForbiddenError(ACCESS_ERROR); }
     })
     .catch(next);
 };

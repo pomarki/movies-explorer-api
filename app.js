@@ -6,13 +6,13 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const { login, createUser } = require('./controllers/users');
-// const { userRouter, movieRouter } = require('./routes');
 
+const { ROUTE_ERROR, SERVER_ERROR } = require('./helpers/res-messages');
 const userRouter = require('./routes/users');
 const movieRouter = require('./routes/movies');
 
 const auth = require('./middlewares/auth');
-const NotFoundError = require('./errors');
+const { NotFoundError } = require('./errors/not-found-err');
 // const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -49,6 +49,7 @@ app.post('/sign-up', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
+    name: Joi.string().required(),
   }),
 }), createUser);
 
@@ -67,7 +68,7 @@ app.use('/movies', movieRouter);
 
 app.use(errors());
 
-app.use((req, res, next) => next(new NotFoundError('Маршрута не существует')));
+app.use((req, res, next) => next(new NotFoundError(ROUTE_ERROR)));
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
@@ -75,7 +76,7 @@ app.use((err, req, res, next) => {
     .status(statusCode)
     .send({
       message: statusCode === 500
-        ? 'На сервере произошла загадочная ошибка'
+        ? SERVER_ERROR
         : message,
     });
   next();

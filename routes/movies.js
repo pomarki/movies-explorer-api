@@ -1,8 +1,15 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const regex = require('../helpers/URL-validate');
-
+const isURL = require('validator/lib/isURL');
+const { LINK_FORMAT_ERROR } = require('../helpers/res-messages');
 const { getMovies, createMovie, deleteMovie } = require('../controllers/movies');
+
+const customValidationURL = (url, helpers) => {
+  if (isURL(url)) {
+    return url;
+  }
+  return helpers.message(LINK_FORMAT_ERROR);
+};
 
 router.get('/', getMovies);
 
@@ -13,9 +20,9 @@ router.post('/', celebrate({
     duration: Joi.number().required(),
     year: Joi.number().required(),
     description: Joi.string().required(),
-    image: Joi.string().pattern(regex),
-    trailer: Joi.string().pattern(regex),
-    thumbnail: Joi.string().pattern(regex),
+    image: Joi.string().custom(customValidationURL),
+    trailer: Joi.string().custom(customValidationURL),
+    thumbnail: Joi.string().custom(customValidationURL),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
     movieId: Joi.string().hex(),
@@ -23,8 +30,8 @@ router.post('/', celebrate({
 }), createMovie);
 
 router.delete('/:movieId', celebrate({
-  params: Joi.object({
-    cardId: Joi.string().length(24).hex(),
+  params: Joi.object().keys({
+    movieId: Joi.string().required().hex(),
   }),
 }), deleteMovie);
 

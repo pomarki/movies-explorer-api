@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const isURL = require('validator/lib/isURL');
+const { LINK_FORMAT_ERROR } = require('../helpers/res-messages');
 
 const movieSchema = new mongoose.Schema(
   {
@@ -29,7 +30,7 @@ const movieSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: (v) => isURL(v),
-        message: 'Неправильный формат ссылки на обложку',
+        message: LINK_FORMAT_ERROR,
       },
     },
     trailer: {
@@ -37,7 +38,7 @@ const movieSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: (v) => isURL(v),
-        message: 'Неправильный формат ссылки на трейлер',
+        message: LINK_FORMAT_ERROR,
       },
     },
     thumbnail: {
@@ -45,7 +46,7 @@ const movieSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: (v) => isURL(v),
-        message: 'Неправильный формат ссылки на превью',
+        message: LINK_FORMAT_ERROR,
       },
     },
     owner: {
