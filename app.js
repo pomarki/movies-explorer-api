@@ -7,13 +7,14 @@ const { errors } = require('celebrate');
 const cors = require('cors');
 const { login, createUser } = require('./controllers/users');
 
+const { DATA_PATH } = process.env;
 const { ROUTE_ERROR, SERVER_ERROR } = require('./helpers/res-messages');
 const userRouter = require('./routes/users');
 const movieRouter = require('./routes/movies');
 
 const auth = require('./middlewares/auth');
 const { NotFoundError } = require('./errors/not-found-err');
-// const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 const options = {
@@ -36,7 +37,7 @@ app.use(helmet());
 
 app.use(express.json());
 
-/* app.use(requestLogger); */
+app.use(requestLogger);
 
 app.post('/sign-in', celebrate({
   body: Joi.object().keys({
@@ -53,7 +54,7 @@ app.post('/sign-up', celebrate({
   }),
 }), createUser);
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(DATA_PATH, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -64,7 +65,7 @@ app.use(auth);
 app.use('/users', userRouter);
 app.use('/movies', movieRouter);
 
-// app.use(errorLogger);
+app.use(errorLogger);
 
 app.use(errors());
 
