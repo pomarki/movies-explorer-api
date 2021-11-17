@@ -2,18 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
-const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const cors = require('cors');
-const { login, createUser } = require('./controllers/users');
+const router = require('./routes');
 
 const { DATA_PATH } = process.env;
-const { ROUTE_ERROR, SERVER_ERROR } = require('./helpers/res-messages');
-const userRouter = require('./routes/users');
-const movieRouter = require('./routes/movies');
-
-const auth = require('./middlewares/auth');
-const { NotFoundError } = require('./errors/not-found-err');
+const { SERVER_ERROR } = require('./helpers/res-messages');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -39,20 +33,7 @@ app.use(express.json());
 
 app.use(requestLogger);
 
-app.post('/sign-in', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }),
-}), login);
-
-app.post('/sign-up', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-    name: Joi.string().required(),
-  }),
-}), createUser);
+app.use('/', router);
 
 mongoose.connect(DATA_PATH, {
   useNewUrlParser: true,
@@ -61,15 +42,9 @@ mongoose.connect(DATA_PATH, {
   useUnifiedTopology: true,
 });
 
-app.use(auth);
-app.use('/users', userRouter);
-app.use('/movies', movieRouter);
-
 app.use(errorLogger);
 
 app.use(errors());
-
-app.use((req, res, next) => next(new NotFoundError(ROUTE_ERROR)));
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
