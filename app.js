@@ -5,9 +5,10 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const router = require('./routes');
+const errorHandler = require('./middlewares/errorhandler');
 
-const { DATA_PATH } = process.env;
-const { SERVER_ERROR } = require('./helpers/res-messages');
+const { PROD_DATA_PATH, NODE_ENV } = process.env;
+const DEV_DATA_PATH = require('./configs/configs');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -29,15 +30,15 @@ const app = express();
 
 app.use('*', cors(options));
 
+app.use(requestLogger);
+
 app.use(helmet());
 
 app.use(express.json());
 
-app.use(requestLogger);
+app.use(router);
 
-app.use('/', router);
-
-mongoose.connect(DATA_PATH, {
+mongoose.connect(NODE_ENV === 'production' ? PROD_DATA_PATH : DEV_DATA_PATH, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -48,17 +49,7 @@ app.use(errorLogger);
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? SERVER_ERROR
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

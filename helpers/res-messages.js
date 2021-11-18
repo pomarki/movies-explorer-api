@@ -11,6 +11,7 @@ const SERVER_ERROR = 'На сервере произошла загадочна�
 const LINK_FORMAT_ERROR = 'Неправильный формат ссылки';
 const EMAIL_FORMAT_ERROR = 'Неправильный формат email';
 const AUTHORIZATION_ERROR = 'Необходима авторизация';
+const DATA_INVALID_ERROR = 'Переданы невалидные данные';
 
 module.exports = {
   REQUEST_ERROR,
@@ -26,4 +27,5 @@ module.exports = {
   LINK_FORMAT_ERROR,
   EMAIL_FORMAT_ERROR,
   AUTHORIZATION_ERROR,
+  DATA_INVALID_ERROR,
 };

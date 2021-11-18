@@ -7,7 +7,10 @@ const { JWT_SECRET, NODE_ENV } = process.env;
 const ConflictError = require('../errors/conflict-err');
 const NotFoundError = require('../errors/not-found-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
-const { USER_NOT_FOUND, USER_REGISTRATION_ERROR, USER_AUTHENTICATION_ERROR} = require('../helpers/res-messages');
+const BadRequestError = require('../errors/bad-request-err');
+const {
+  USER_NOT_FOUND, USER_REGISTRATION_ERROR, USER_AUTHENTICATION_ERROR, DATA_INVALID_ERROR,
+} = require('../helpers/res-messages');
 
 module.exports.getActualUserInfo = (req, res, next) => {
   User.findById(req.user._id)
@@ -36,7 +39,15 @@ module.exports.updateUserProfile = (req, res, next) => {
     .then((user) => res.send({
       name: user.name, email: user.email,
     }))
-    .catch(next);
+    .catch((error) => {
+      if (error.code === 11000) {
+        return next(new ConflictError(USER_REGISTRATION_ERROR));
+      }
+      if (error.name === 'ValidationError') {
+        return next(new BadRequestError(DATA_INVALID_ERROR));
+      }
+      return next(error);
+    });
 };
 
 module.exports.createUser = (req, res, next) => {
