@@ -16,8 +16,8 @@ const options = {
   origin: [
     'http://localhost:3000',
     'https://github.com/pomarki',
-    'http://kino-domino.nomoredomains.rocks',
     'https://kino-domino.nomoredomains.rocks',
+    'https://api.kino-domino.nomoredomains.rocks',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
