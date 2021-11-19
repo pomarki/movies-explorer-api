@@ -1,8 +1,9 @@
 # movies-explorer-api
 graduation project (backend)
 
+|                                              |
 ------------------------------------------------
-|'http://kino-domino.nomoredomains.rocks'      |
+|'https://api.kino-domino.nomoredomains.rocks' |
 ------------------------------------------------   
 |'https://kino-domino.nomoredomains.rocks'     |
 ------------------------------------------------
