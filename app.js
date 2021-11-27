@@ -16,9 +16,9 @@ const { PORT = 3000 } = process.env;
 const options = {
   origin: [
     'http://localhost:3000',
-    // 'https://github.com/pomarki',
-    // 'https://kino-domino.nomoredomains.rocks',
-    // 'http://kino-domino.nomoredomains.rocks',
+    'https://github.com/pomarki',
+    'https://kino-domino.nomoredomains.rocks',
+    'http://kino-domino.nomoredomains.rocks',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
