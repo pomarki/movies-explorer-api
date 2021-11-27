@@ -1,5 +1,5 @@
 const isURL = require('validator/lib/isURL');
-const LINK_FORMAT_ERROR = require('./res-messages');
+const { LINK_FORMAT_ERROR } = require('./res-messages');
 
 const customValidationURL = (url, helpers) => {
   if (isURL(url)) {

@@ -4,15 +4,15 @@ const customValidationURL = require('../helpers/URL-validate');
 const validationsLogin = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 });
 
 const validationsCreateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-    name: Joi.string().required(),
+    password: Joi.string().required(),
+    name: Joi.string().required().min(2),
   }),
 });
 
@@ -30,12 +30,12 @@ const validationCreateMovie = celebrate({
     duration: Joi.number().required(),
     year: Joi.number().required(),
     description: Joi.string().required(),
-    image: Joi.string().custom(customValidationURL),
-    trailer: Joi.string().custom(customValidationURL),
-    thumbnail: Joi.string().custom(customValidationURL),
+    image: Joi.string().required().custom(customValidationURL),
+    trailer: Joi.string().required().custom(customValidationURL),
+    thumbnail: Joi.string().required().custom(customValidationURL),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
-    movieId: Joi.string().hex(),
+    movieId: Joi.number().required(),
   }),
 });
 

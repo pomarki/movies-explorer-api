@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
+const { DEV_JWT_SECRET } = require('../configs/configs');
 
 const ConflictError = require('../errors/conflict-err');
 const NotFoundError = require('../errors/not-found-err');
@@ -86,7 +87,7 @@ module.exports.login = (req, res, next) => {
       if (!matched) {
         return Promise.reject(new UnauthorizedError(USER_AUTHENTICATION_ERROR));
       }
-      const token = jwt.sign({ _id: userId }, NODE_ENV === 'production' ? JWT_SECRET : 'super-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: userId }, NODE_ENV === 'production' ? JWT_SECRET : DEV_JWT_SECRET, { expiresIn: '7d' });
 
       return res.send({ token });
     })

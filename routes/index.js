@@ -8,11 +8,11 @@ const NotFoundError = require('../errors/not-found-err');
 const { ROUTE_ERROR } = require('../helpers/res-messages');
 const { validationsLogin, validationsCreateUser } = require('../middlewares/validations');
 
-router.post('/sign-in', validationsLogin, login);
-router.post('/sign-up', validationsCreateUser, createUser);
+router.post('/signin', validationsLogin, login);
+router.post('/signup', validationsCreateUser, createUser);
 router.use('/users', auth, userRouter);
 router.use('/movies', auth, movieRouter);
-
+router.use(auth);
 router.all('*', (req, res, next) => next(new NotFoundError(ROUTE_ERROR)));
 
 module.exports = router;

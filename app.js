@@ -6,18 +6,19 @@ const { errors } = require('celebrate');
 const cors = require('cors');
 const router = require('./routes');
 const errorHandler = require('./middlewares/errorhandler');
+const limiter = require('./middlewares/limiter');
 
 const { PROD_DATA_PATH, NODE_ENV } = process.env;
-const DEV_DATA_PATH = require('./configs/configs');
+const { DEV_DATA_PATH } = require('./configs/configs');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 const options = {
   origin: [
     'http://localhost:3000',
-    'https://github.com/pomarki',
-    'https://kino-domino.nomoredomains.rocks',
-    'http://kino-domino.nomoredomains.rocks',
+    // 'https://github.com/pomarki',
+    // 'https://kino-domino.nomoredomains.rocks',
+    // 'http://kino-domino.nomoredomains.rocks',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,
@@ -31,6 +32,8 @@ const app = express();
 app.use('*', cors(options));
 
 app.use(requestLogger);
+
+app.use(limiter);
 
 app.use(helmet());
 

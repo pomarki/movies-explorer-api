@@ -3,7 +3,12 @@ const BadRequestError = require('../errors/bad-request-err');
 const NotFoundError = require('../errors/not-found-err');
 const ForbiddenError = require('../errors/forbidden-err');
 const {
-  REQUEST_ERROR, DATA_CREATE_ERROR, DATE_NOT_FOUND, DATE_SUCCESS_REMOVE, ACCESS_ERROR,
+  REQUEST_ERROR,
+  DATA_CREATE_ERROR,
+  DATE_NOT_FOUND,
+  DATE_SUCCESS_REMOVE,
+  ACCESS_ERROR,
+  DATA_REMOVE_ERROR,
 } = require('../helpers/res-messages');
 
 module.exports.getMovies = (req, res, next) => {
@@ -53,9 +58,15 @@ module.exports.deleteMovie = (req, res, next) => {
     .orFail(new NotFoundError(DATE_NOT_FOUND))
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
-        Movie.deleteOne({ _id: movie._id })
-          .then(res.send({ message: DATE_SUCCESS_REMOVE }));
-      } else { throw new ForbiddenError(ACCESS_ERROR); }
+        return movie.remove()
+          .then(() => res.status(200).send({ message: DATE_SUCCESS_REMOVE }));
+      }
+      return next(new ForbiddenError(ACCESS_ERROR));
     })
-    .catch(next);
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        return next(new BadRequestError(DATA_REMOVE_ERROR));
+      }
+      return next(error);
+    });
 };
